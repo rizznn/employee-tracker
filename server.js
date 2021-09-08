@@ -1,5 +1,6 @@
 const mysql = require('mysql2');
 const express = require('express');
+const inputCheck = require('./utils/inputCheck');
 
 // PORT designation
 const PORT = process.env.PORT || 3001;
@@ -24,37 +25,88 @@ const db = mysql.createConnection(
     console.log('Connected to the employees database.')
 );
 
-// db.query(`SELECT * FROM employee`, (err, rows) => {
-//     console.log(rows);
-// });  
-// GET a single employee
-db.query(`SELECT * FROM employee WHERE id = 1`, (err, row) => {
-    if (err) {
-      console.log(err);
-    }
-    console.log(row);
-});
-
-// // Delete a employee
-// db.query(`DELETE FROM employee WHERE id = ?`, 1, (err, result) => {
-//     if (err) {
-//       console.log(err);
-//     }
-//     console.log(result);
-// });
+// Get all employees
+app.get('/api/employee', (req, res) => {
+    const sql = `SELECT * FROM employee`;
   
-// Create a employee
-const sql = `INSERT INTO employee (id, first_name, last_name, role_id, manager_id) 
-              VALUES (?,?,?,?,?)`;
-const params = [1, 'John', 'Doe', 1, 3];
-
-db.query(sql, params, (err, result) => {
-  if (err) {
-    console.log(err);
-  }
-  console.log(result);
+    db.query(sql, (err, rows) => {
+      if (err) {
+        res.status(500).json({ error: err.message });
+        return;
+      }
+      res.json({
+        message: 'success',
+        data: rows
+      });
+    });
 });
 
+// GET a single employee
+app.get('/api/employee/:id', (req, res) => {
+    const sql = `SELECT * FROM employee WHERE id = ?`;
+    const params = [req.params.id];
+  
+    db.query(sql, params, (err, row) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({
+        message: 'success',
+        data: row
+      });
+    });
+});
+  
+
+// // Delete an employee
+app.delete('/api/employee/:id', (req, res) => {
+    const sql = `DELETE FROM employee WHERE id = ?`;
+    const params = [req.params.id];
+  
+    db.query(sql, params, (err, result) => {
+      if (err) {
+        res.statusMessage(400).json({ error: res.message });
+      } else if (!result.affectedRows) {
+        res.json({
+          message: 'Employee not found'
+        });
+      } else {
+        res.json({
+          message: 'deleted',
+          changes: result.affectedRows,
+          id: req.params.id
+        });
+      }
+    });
+});
+  
+  
+// Create an employee
+app.post('/api/employee', ({ body }, res) => {
+    const errors = inputCheck(body, 'first_name', 'last_name', 'role_id', 'manager_id');
+    if (errors) {
+      res.status(400).json({ error: errors });
+      return;
+    }
+
+    const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+    VALUES (?,?,?,?)`;
+    const params = [body.first_name, body.last_name, body.role_id, body.manager_id];
+
+    db.query(sql, params, (err, result) => {
+        if (err) {
+            res.status(400).json({ error: err.message });
+            return;
+        }
+        res.json({
+            message: 'success',
+            data: body
+        });
+    });
+
+});
+  
 // Default response for any other request (Not Found)
 app.use((req, res) => {
     res.status(404).end();
