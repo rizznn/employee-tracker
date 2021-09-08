@@ -27,7 +27,10 @@ const db = mysql.createConnection(
 
 // Get all employees
 app.get('/api/employee', (req, res) => {
-    const sql = `SELECT * FROM employee`;
+    const sql = `SELECT *
+             FROM employee 
+             LEFT JOIN role 
+             ON employee.role_id = role.id`;
   
     db.query(sql, (err, rows) => {
       if (err) {
@@ -43,7 +46,12 @@ app.get('/api/employee', (req, res) => {
 
 // GET a single employee
 app.get('/api/employee/:id', (req, res) => {
-    const sql = `SELECT * FROM employee WHERE id = ?`;
+    const sql = `SELECT *
+    FROM employee 
+    LEFT JOIN role 
+    ON employee.role_id = role.id 
+    WHERE employee.id = ?`;
+
     const params = [req.params.id];
   
     db.query(sql, params, (err, row) => {
