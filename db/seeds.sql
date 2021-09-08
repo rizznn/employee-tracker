@@ -8,7 +8,7 @@ VALUES
 INSERT INTO role (title, salary, department_id)
 VALUES
     ('Sales Lead', 100000, 1),
-    ('Salesperson' 8000, 1),
+    ('Salesperson', 8000, 1),
     ('Lead Engineer', 150000, 2),
     ('Software Engineer', 120000, 2),
     ('Accountant', 125000, 3),
@@ -24,4 +24,4 @@ VALUES
     ('Malia', 'Brown', 5, NULL),
     ('Sarah', 'Lourd', 6, NULL),
     ('Tom', 'Allen', 7, 7),
-    ('Christian', 'Eckenrode', 4, 3)
+    ('Christian', 'Eckenrode', 4, 3);
