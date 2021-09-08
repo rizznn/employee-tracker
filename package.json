@@ -18,8 +18,10 @@
   },
   "homepage": "https://github.com/rizznn/employee-tracker#readme",
   "dependencies": {
+    "console.table": "^0.10.0",
     "express": "^4.17.1",
     "inquirer": "^8.1.2",
-    "jest": "^27.1.0"
+    "jest": "^27.1.0",
+    "mysql2": "^2.3.0"
   }
 }
