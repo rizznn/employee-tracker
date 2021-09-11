@@ -7,7 +7,7 @@ class EmployeeDB {
 
     // view all departments
     allDepartments() {
-        return this.connection.query(
+        return this.connection.promise().query(
             `SELECT department.id, department.name AS department FROM department`
         );
     }
@@ -27,17 +27,17 @@ class EmployeeDB {
     }
 
     // view all employees by department
-    allEmployeesByDepartment() {
+    allEmployeesByDepartment(department_id) {
         return this.connection.promise().query(`SELECT employee.id, employee.first_name, employee.last_name, role.title AS title, department.name AS department, role.salary AS salary, concat(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id
-        WHERE department.id = ?`
+        WHERE department.id = ?`, department_id
         )
     }
 
 
     // view all employees by manager
-    allEmployeesByManager() {
+    allEmployeesByManager(manager_id) {
         return this.connection.promise().query(`SELECT employee.id, employee.first_name, employee.last_name, role.title AS title, department.name AS department, role.salary AS salary, concat(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id
-        WHERE manager.id = ?`
+        WHERE manager.id = ?`, manager_id
         )
     }
 
@@ -90,6 +90,9 @@ class EmployeeDB {
         return this.connection.promise().query(`DELETE FROM employee WHERE id = ?`)
     }
 
+    quit() {
+        this.connection.end();
+    }
  
 }
 

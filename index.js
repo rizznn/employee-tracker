@@ -28,6 +28,12 @@ function promptUser() {
 
     ]).then(answer => {
         switch (answer.userChoices) {
+            case "View All Departments":
+                viewAllDepartments();
+                break;
+            case "View All Roles":
+                viewAllRoles();
+                break;
             case "View All Employees":
                 viewAllEmployees();
                 break;
@@ -37,11 +43,14 @@ function promptUser() {
             case "View All Employees By Manager":
                 viewAllEmployeesByManager();
                 break;
+            case "Add Department":
+                addDepartment();
+                break;
+            case "Add Role":
+                addRole();
+                break;
             case "Add Employee":
                 addEmployee();
-                break;
-            case "Remove Employee":
-                removeEmployee();
                 break;
             case "Update Employee Role":
                 updateEmployeeRole();
@@ -49,57 +58,92 @@ function promptUser() {
             case "Update Employee Manager":
                 updateEmployeeManager();
                 break;
-            case "View All Roles":
-                viewAllRoles();
-                break;
-            case "Add Role":
-                addRole();
+            case "Remove Department":
+                removeDepartment();
                 break;
             case "Remove Role":
                 removeRole();
                 break;
-            case "View All Departments":
-                viewAllDepartments();
-                break;
-            case "Add Department":
-                addDepartment();
-                break;
-            case "Remove Department":
-                removeDepartment();
+            case "Remove Employee":
+                removeEmployee();
                 break;
             default:
-                quit();
+                exit();
         }
     });
+}
+
+// View all departments
+function viewAllDepartments() {
+    db.allDepartments()
+    .then(([rows]) => {
+        console.log("\n");
+        console.table(rows);
+    })
+    .then(() => promptUser())
+    .catch(err => console.log(err));
+}
+
+// View all roles
+function viewAllRoles() {
+    db.allRoles()
+    .then(([rows]) => {
+        console.log("\n");
+        console.table(rows);
+    })
+    .then(() => promptUser())
+    .catch(err => console.log(err));
 }
 
 // View all employees
 function viewAllEmployees() {
     db.allEmployees()
-        .then(([rows]) => {
-            console.log("\n");
-            console.table(rows);
-        })
-        .then(() => promptUser());
+    .then(([rows]) => {
+        console.log("\n");
+        console.table(rows);
+    })
+    .then(() => promptUser())
+    .catch(err => console.log(err));
 }
-// "View All Employees By Department",
-// "View All Employees By Manager",
-// "Add Employee",
+
+// View all employees by department
+function viewAllEmployeesByDepartment() {
+    db.allEmployeesByDepartment()
+    .then(([rows]) => {
+        console.log("\n");
+        console.table(rows);
+    })
+    .then(() => promptUser())
+    .catch(err => console.log(err));
+}
+
+// View all employees by manager
+function viewAllEmployeesByManager() {
+    db.allEmployeesByManager()
+    .then(([rows]) => {
+        console.log("\n");
+        console.table(rows);
+    })
+    .then(() => promptUser())
+    .catch(err => console.log(err));
+}
+
+// Add an employee
+
+
+
 // "Remove Employee",
 // "Update Employee Role",
 // "Update Employee Manager",
-// "View All Roles",
 // "Add Role",
 // "Remove Role",
 // "View All Departments",
 // "Add Department",
 // "Remove Department",
-// "Exit"
-// function viewAllDepartments {
 
-// }
-// function {
 
-// }
+function exit() {
+    db.quit();
+}
 
 promptUser();
