@@ -109,8 +109,12 @@ function viewAllEmployees() {
 // View all employees by department
 function viewAllEmployeesByDepartment() {
     db.allDepartments()
+    .then((res) => {
+        return res[0].map(department => {
+            return {
+
     // let employees = rows
-        .then(([employees]) => {
+        // .then(([departments]) => {
             // const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
             //     name: `${first_name} ${last_name}`,
             //     value: id
@@ -118,34 +122,40 @@ function viewAllEmployeesByDepartment() {
 
     // db.allDepartments() 
     // .then(([rows]) => {
-        const departmentChoices = employees.map(({ id, name }) => ({
-            name: name,
-            value: id
-
-        }));
+        // const departmentChoices = departments.map(({ id, name }) => ({
+            name: department.name,
+            value: department.id
+            }
+        })
+    })
+        // }))
 
     // db.allEmployeesByDepartment()
-    // .then(departments => {
+    .then(async (departmentList) => {
         return inquirer.prompt([
             {
                 type: "list",
                 name: "departmentId",
                 message: "Which department you would like to view?",
-                choices: departmentChoices
+                choices: departmentList
             }
         ])
+    })
     .then( answer => {
         // return db.promise().query(`SELECT * from Employee where department_id=?`,answer.departmentId);
-        const res= db.allEmployeesByDepartment( answer.departmentId);
-        console.log("\n");
-        console.table(res);
+        return db.allEmployeesByDepartment( answer.departmentId);
+        // console.log("\n");
+        // // console.table(res);
+        // promptUser();
+
+    })
+    .then(res => {
+        console.table(res[0])
         promptUser();
     })
-    // .then(() => 
-    //     // console.log(answer),
-    // )
-    .catch(err => console.log(err))
-   })
+    .catch(err => {
+        throw err
+    });
 }
 
 // View all employees by manager
