@@ -194,9 +194,59 @@ function viewAllEmployeesByManager() {
     });
 }
 
+// Add a department
+function addDepartment() {
+    return inquirer.prompt([
+        {
+            name: "name",
+            message: "What is the name of the department?"
+        }
+    ])
+        .then(res => {
+            db.addDepartment(res)
+                .then(() => console.log(`Added ${res.name} to the database`))
+                .then(() => promptUser())
+        })
+}
+
+// add a role
+function addRole() {
+    db.allDepartments()
+    .then(([rows]) => {
+        const departmentChoices = rows.map(({ id, name }) => ({
+            name: name,
+            value: id
+        }));
+
+        return inquirer.prompt([
+            {
+                name: "title",
+                message: "What is the name of the role?"
+            },
+            {
+                name: "salary",
+                message: "What is the salary for this role?"
+            },
+            {
+                type: "list",
+                name: "department_id",
+                message: "Which department does the role fall in under?",
+                choices: departmentChoices
+            }
+        ])
+            .then(role => {
+                db.addRole(role)
+                    .then(() => console.log(`Added ${role.title} to the database`))
+                    .then(() => promptUser())
+            })
+    })
+}
+
+
 // Add an employee
 function addEmployee() {
-    return inquirer.prompt([        {
+    return inquirer.prompt([        
+        {
             name: "first_name",
             message: "What is the employee's first name?"
         },

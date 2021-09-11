@@ -29,7 +29,7 @@ class EmployeeDB {
     // view all employees by department
     allEmployeesByDepartment(departmentId) {
         return this.connection.promise().query(`SELECT employee.id, employee.first_name, employee.last_name, role.title AS title, role.salary AS salary, concat(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN employee manager on manager.id = employee.manager_id
-        WHERE department_id = ?`, [departmentId]
+        WHERE department_id = ?`, departmentId
         )
     }
 
