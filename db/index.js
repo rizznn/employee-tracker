@@ -1,6 +1,6 @@
-const db = require('../../db/connection');
+const db = require('../db/connection');
 
-class Employee {
+class EmployeeDB {
     constructor (db) {
         this.connection = db;
     }
@@ -14,21 +14,21 @@ class Employee {
 
     // view all roles
     allRoles() {
-        return this.connection.query(
+        return this.connection.promise().query(
             `SELECT role.id, role.title AS title, department.name AS department, role.salary AS salary FROM role LEFT JOIN department on role.department_id = department.id`
         );
     }
 
      // view all employees
      allEmployees() {
-        return this.connection.query (
-            `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;`
+        return this.connection.promise().query (
+            `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, concat(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;`
         );
     }
 
     // view all employees by department
     allEmployeesByDepartment() {
-        return this.connection.promise().query(`SELECT employee.id, employee.first_name, employee.last_name, role.title AS title, department.name AS department, role.salary AS salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id
+        return this.connection.promise().query(`SELECT employee.id, employee.first_name, employee.last_name, role.title AS title, department.name AS department, role.salary AS salary, concat(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id
         WHERE department.id = ?`
         )
     }
@@ -36,7 +36,7 @@ class Employee {
 
     // view all employees by manager
     allEmployeesByManager() {
-        return this.connection.promise().query(`SELECT employee.id, employee.first_name, employee.last_name, role.title AS title, department.name AS department, role.salary AS salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id
+        return this.connection.promise().query(`SELECT employee.id, employee.first_name, employee.last_name, role.title AS title, department.name AS department, role.salary AS salary, concat(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id
         WHERE manager.id = ?`
         )
     }
@@ -93,7 +93,7 @@ class Employee {
  
 }
 
-module.exports = new Employee (db)
+module.exports = new EmployeeDB (db)
 
 
 

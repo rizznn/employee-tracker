@@ -1,6 +1,6 @@
 const inquirer = require('inquirer');
 const db = require("./db");
-// require("console.table");
+const cTable = require("console.table");
 
 function promptUser() {
     return inquirer.prompt([
@@ -9,19 +9,19 @@ function promptUser() {
         name: "userChoices",
         message: "What would you like to do?",
         choices: [
+            "View All Departments",
+            "View All Roles",
             "View All Employees",
             "View All Employees By Department",
             "View All Employees By Manager",
+            "Add Department",
+            "Add Role",
             "Add Employee",
-            "Remove Employee",
             "Update Employee Role",
             "Update Employee Manager",
-            "View All Roles",
-            "Add Role",
-            "Remove Role",
-            "View All Departments",
-            "Add Department",
             "Remove Department",
+            "Remove Role",
+            "Remove Employee",
             "Exit"
         ]
     }
@@ -70,11 +70,18 @@ function promptUser() {
             default:
                 quit();
         }
-    }
-    )
+    });
 }
 
-// "View All Employees",
+// View all employees
+function viewAllEmployees() {
+    db.allEmployees()
+        .then(([rows]) => {
+            console.log("\n");
+            console.table(rows);
+        })
+        .then(() => promptUser());
+}
 // "View All Employees By Department",
 // "View All Employees By Manager",
 // "Add Employee",
@@ -94,3 +101,5 @@ function promptUser() {
 // function {
 
 // }
+
+promptUser();
