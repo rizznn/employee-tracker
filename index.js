@@ -134,34 +134,24 @@ function viewAllEmployeesByDepartment() {
                 choices: departmentChoices
             }
         ])
-    .then(answer => {
+    .then( answer => {
         // return db.promise().query(`SELECT * from Employee where department_id=?`,answer.departmentId);
-        const res= db.allEmployeesByDepartment( answer.departmentId)
-        console.table(res)
+        const res= db.allEmployeesByDepartment( answer.departmentId);
+        console.log("\n");
+        console.table(res);
+        promptUser();
     })
-    .then(() => 
-        console.log("\n"),
-        // console.log(answer),
-    )
-    
-    .then(() => promptUser())
+    // .then(() => 
+    //     // console.log(answer),
+    // )
     .catch(err => console.log(err))
    })
 }
 
 // View all employees by manager
 function viewAllEmployeesByManager() {
-    // db.allEmployeesByManager()
-    // .then(([rows]) => {
-    //     console.log("\n");
-    //     console.table(rows);
-    // })
-    // .then(() => promptUser())
-    // .catch(err => console.log(err));
-
-    db.promise().query('SELECT *  FROM employee')
+    db.allEmployees()
     .then((res) => {
-        // make the choice dept arr
         return res[0].map(employee => {
             return {
                 name: employee.first_name,
@@ -175,20 +165,19 @@ function viewAllEmployeesByManager() {
                 type: 'list',
                 name: 'managerId',
                 choices: managerList,
-                message: 'Please select the manager you want to view employee by.'
+                message: 'Which manager you want to view the employee(s) by?'
             }
         ])
     })
     .then(answer => {
         console.log(answer);
-        return connection.promise().query('SELECT * from Employee where manager_id=?',answer.managerId);
+        return db.allEmployeesByManager(answer.managerId);
 
     })
     .then(res => {
         console.table(res[0])
         promptUser();
     })
-
     .catch(err => {
         throw err
     });
