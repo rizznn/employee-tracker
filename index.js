@@ -108,27 +108,158 @@ function viewAllEmployees() {
 
 // View all employees by department
 function viewAllEmployeesByDepartment() {
-    db.allEmployeesByDepartment()
-    .then(([rows]) => {
-        console.log("\n");
-        console.table(rows);
+    db.allDepartments()
+    // let employees = rows
+        .then(([employees]) => {
+            // const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
+            //     name: `${first_name} ${last_name}`,
+            //     value: id
+            // }))
+
+    // db.allDepartments() 
+    // .then(([rows]) => {
+        const departmentChoices = employees.map(({ id, name }) => ({
+            name: name,
+            value: id
+
+        }));
+
+    // db.allEmployeesByDepartment()
+    // .then(departments => {
+        return inquirer.prompt([
+            {
+                type: "list",
+                name: "departmentId",
+                message: "Which department you would like to view?",
+                choices: departmentChoices
+            }
+        ])
+    .then(answer => {
+        // return db.promise().query(`SELECT * from Employee where department_id=?`,answer.departmentId);
+        const res= db.allEmployeesByDepartment( answer.departmentId)
+        console.table(res)
     })
+    .then(() => 
+        console.log("\n"),
+        // console.log(answer),
+    )
+    
     .then(() => promptUser())
-    .catch(err => console.log(err));
+    .catch(err => console.log(err))
+   })
 }
 
 // View all employees by manager
 function viewAllEmployeesByManager() {
-    db.allEmployeesByManager()
-    .then(([rows]) => {
-        console.log("\n");
-        console.table(rows);
+    // db.allEmployeesByManager()
+    // .then(([rows]) => {
+    //     console.log("\n");
+    //     console.table(rows);
+    // })
+    // .then(() => promptUser())
+    // .catch(err => console.log(err));
+
+    db.promise().query('SELECT *  FROM employee')
+    .then((res) => {
+        // make the choice dept arr
+        return res[0].map(employee => {
+            return {
+                name: employee.first_name,
+                value: employee.id
+            }
+        })
     })
-    .then(() => promptUser())
-    .catch(err => console.log(err));
+    .then(async (managerList) => {
+        return inquirer.prompt([
+            {
+                type: 'list',
+                name: 'managerId',
+                choices: managerList,
+                message: 'Please select the manager you want to view employee by.'
+            }
+        ])
+    })
+    .then(answer => {
+        console.log(answer);
+        return connection.promise().query('SELECT * from Employee where manager_id=?',answer.managerId);
+
+    })
+    .then(res => {
+        console.table(res[0])
+        promptUser();
+    })
+
+    .catch(err => {
+        throw err
+    });
 }
 
 // Add an employee
+function addEmployee() {
+    return inquirer.prompt([        {
+            name: "first_name",
+            message: "What is the employee's first name?"
+        },
+        {
+            name: "last_name",
+            message: "What is the employee's last name?"
+        }
+    ])
+        .then(res => {
+            let firstName = res.first_name;
+            let lastName = res.last_name;
+
+            db.allRoles()
+                .then(([rows]) => {
+                    let roles = rows;
+                    const roleChoices = roles.map(({ id, title }) => ({
+                        name: title,
+                        value: id
+                    }));
+                    return inquirer.prompt({
+                        type: "list",
+                        name: "roleId",
+                        message: "What is the employee's role?",
+                        choices: roleChoices
+                    })
+                        .then(res => {
+                            let roleId = res.roleId;
+
+                            db.allEmployees()
+                                .then(([rows]) => {
+                                    let employees = rows;
+                                    const managerChoices = employees.map(({ id, first_name, last_name }) => ({
+                                        name: `${first_name} ${last_name}`,
+                                        value: id
+                                    }));
+
+                                    managerChoices.unshift({ name: "None", value: null });
+
+                                    return inquirer.prompt({
+                                        type: "list",
+                                        name: "managerId",
+                                        message: "Who is the employee's manager?",
+                                        choices: managerChoices
+                                    })
+                                        .then(res => {
+                                            let employee = {
+                                                manager_id: res.managerId,
+                                                role_id: roleId,
+                                                first_name: firstName,
+                                                last_name: lastName
+                                            }
+
+                                            db.addEmployee(employee);
+                                        })
+                                        .then(() => console.log(
+                                            `\n Added ${firstName} ${lastName} to the database \n`
+                                        ))
+                                        .then(() => promptUser())
+                                })
+                        })
+                })
+        })
+}
 
 
 

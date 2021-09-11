@@ -27,9 +27,9 @@ class EmployeeDB {
     }
 
     // view all employees by department
-    allEmployeesByDepartment(department_id) {
-        return this.connection.promise().query(`SELECT employee.id, employee.first_name, employee.last_name, role.title AS title, department.name AS department, role.salary AS salary, concat(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id
-        WHERE department.id = ?`, department_id
+    allEmployeesByDepartment(departmentId) {
+        return this.connection.promise().query(`SELECT employee.id, employee.first_name, employee.last_name, role.title AS title, role.salary AS salary, concat(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN employee manager on manager.id = employee.manager_id
+        WHERE department_id = ?`, [departmentId]
         )
     }
 
@@ -67,7 +67,7 @@ class EmployeeDB {
     }
 
     // update an employee manager
-    updateEmployeeRole(employeeId,managerId) {
+    updateEmployeeManager(employeeId,managerId) {
         return this.connection.promise().query(
             "UPDATE employee SET manager_id = ? WHERE id = ?",
             [managerId, employeeId]
