@@ -112,13 +112,12 @@ function viewAllEmployeesByDepartment() {
     .then((res) => {
         return res[0].map(department => {
             return {
-                name: department.name,
+                name: department.department,
                 value: department.id
             }
         })
     })
     .then(async (departmentList) => {
-        console.log(departmentList);
         return inquirer.prompt([
             {
                 type: "list",
@@ -129,7 +128,6 @@ function viewAllEmployeesByDepartment() {
         ])
     })
     .then(answer => {
-        console.log(answer.departmentId);
         return db.allEmployeesByDepartment(answer.departmentId);
     })
     .then(res => {
@@ -145,7 +143,7 @@ function viewAllEmployeesByManager() {
     .then((res) => {
         return res[0].map(employee => {
             return {
-                name: employee.first_name,
+                name: `${employee.first_name} ${employee.last_name}`,
                 value: employee.id
             }
         })
@@ -161,7 +159,6 @@ function viewAllEmployeesByManager() {
         ])
     })
     .then(answer => {
-        console.log(answer.managerId);
         return db.allEmployeesByManager(answer.managerId);
     })
     .then(res => {
@@ -181,8 +178,8 @@ function addDepartment() {
     ])
         .then(res => {
             db.addDepartment(res)
-                .then(() => console.log(`Added ${res.name} to the database`))
-                .then(() => promptUser())
+            .then(() => console.log(`Added ${res.name} to the database`))
+            .then(() => promptUser())
         })
         .catch(err => console.log(err));
 }
@@ -190,11 +187,15 @@ function addDepartment() {
 // add a role
 function addRole() {
     db.allDepartments()
-    .then(([rows]) => {
-        const departmentChoices = rows.map(({ id, name }) => ({
-            name: name,
-            value: id
-        }));
+    .then((res) => {
+        return res[0].map(department => {
+            return {
+                name: department.department,
+                value: department.id
+            }
+        })
+    })
+    .then(async (departmentList) => {
         return inquirer.prompt([
             {
                 name: "title",
@@ -208,16 +209,15 @@ function addRole() {
                 type: "list",
                 name: "department_id",
                 message: "Which department does the role fall in under?",
-                choices: departmentChoices
+                choices: departmentList
             }
         ])
-            .then(role => {
-                db.addRole(role)
-            .then(() => 
-                console.log(`Added ${role.title} to the database`));
-                promptUser();
-            })
-            .catch(err => console.log(err));
+        .then(role => {
+            db.addRole(role)
+        .then(() => console.log(`Added ${role.title} to the database`))
+        .then(() => promptUser())
+        })
+        .catch(err => console.log(err));
     })
 }
 
@@ -241,7 +241,7 @@ function addEmployee() {
         db.allRoles()
             .then(([rows]) => {
                 let roles = rows;
-                const roleChoices = roles.map(({ id, title }) => ({
+                const roleList = roles.map(({ id, title }) => ({
                     name: title,
                     value: id
                 }));
@@ -249,7 +249,7 @@ function addEmployee() {
                     type: "list",
                     name: "roleId",
                     message: "What is the employee's role?",
-                    choices: roleChoices
+                    choices: roleList
                 })
                 .then(res => {
                     let roleId = res.roleId;
@@ -257,18 +257,18 @@ function addEmployee() {
                     db.allEmployees()
                         .then(([rows]) => {
                             let employees = rows;
-                            const managerChoices = employees.map(({ id, first_name, last_name }) => ({
+                            const managerList = employees.map(({ id, first_name, last_name }) => ({
                                 name: `${first_name} ${last_name}`,
                                 value: id
                             }));
 
-                            managerChoices.unshift({ name: "None", value: null });
+                            managerList.unshift({ name: "None", value: null });
 
                             return inquirer.prompt({
                                 type: "list",
                                 name: "managerId",
                                 message: "Who is the employee's manager?",
-                                choices: managerChoices
+                                choices: managerList
                             })
                             .then(res => {
                                 let employee = {
@@ -339,7 +339,7 @@ function updateEmployeeRole() {
         })
         .then(res => {
             // console.log(res);
-            console.log('Updated Manager Successfully');
+            console.log("Employee's Role is updated");
             promptUser();
         })
         .catch(err => console.log(err));
@@ -379,6 +379,9 @@ function updateEmployeeManager() {
         })
     }) 
     .then((managerList) => {
+
+        managerList.unshift({ name: "None", value: null });
+
         return inquirer.prompt(
             {
                 type: 'list',
@@ -405,7 +408,7 @@ function removeDepartment() {
     .then((res) => {
         return res[0].map(department => {
             return {
-                name: `${department.name}`,
+                name: department.department,
                 value: department.id
             }
         })
