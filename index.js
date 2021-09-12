@@ -178,7 +178,7 @@ function addDepartment() {
     ])
         .then(res => {
             db.addDepartment(res)
-            .then(() => console.log(`Added ${res.name} to the database`))
+            .then(() => console.log(`Added ${res.name} to the database\n`))
             .then(() => promptUser())
         })
         .catch(err => console.log(err));
@@ -214,7 +214,7 @@ function addRole() {
         ])
         .then(role => {
             db.addRole(role)
-        .then(() => console.log(`Added ${role.title} to the database`))
+        .then(() => console.log(`Added ${role.title} to the database\n`))
         .then(() => promptUser())
         })
         .catch(err => console.log(err));
@@ -339,7 +339,7 @@ function updateEmployeeRole() {
         })
         .then(res => {
             // console.log(res);
-            console.log("Employee's Role is updated");
+            console.log(`Updated employee's role\n`);
             promptUser();
         })
         .catch(err => console.log(err));
@@ -387,7 +387,7 @@ function updateEmployeeManager() {
                 type: 'list',
                 name: 'managerId',
                 choices: managerList,
-                message: "Who is the employee's manager?"
+                message: "Which employee do you want to set as manager for the selected employee?"
             })
     })
     .then(answer => {
@@ -395,7 +395,7 @@ function updateEmployeeManager() {
     })
     .then(res => {
         // console.log(res);
-        console.log("Employee's Manager is updated");
+        console.log("Updated employee's manager\n");
         promptUser();
     })
     .catch(err => console.log(err));    
@@ -428,11 +428,10 @@ function removeDepartment() {
     })
     .then(res => {
         // console.log(res);
-        console.log('Department Deleted Successfully')
+        console.log('Department Deleted Successfully\n')
         promptUser();
     })
     .catch(err => console.log(err));    
-
 }
 
 // Remove role
@@ -461,7 +460,7 @@ function removeRole() {
     })
     .then(res => {
         // console.log(res);
-        console.log('Role Deleted Successfully')
+        console.log('Role Deleted Successfully\n')
         promptUser();
     })
     .catch(err => console.log(err));
@@ -493,7 +492,7 @@ function removeEmployee() {
     })
     .then(res => {
         // console.log(res);
-        console.log('Employee Deleted Successfully')
+        console.log('Employee Deleted Successfully\n')
         promptUser();
     })
     .catch(err => console.log(err));
