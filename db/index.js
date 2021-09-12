@@ -76,18 +76,18 @@ class EmployeeDB {
  
 
     // delete a department
-    deleteDepartment() {
-        return this.connection.promise().query(` DELETE FROM Department WHERE id = ?`)
+    deleteDepartment(department) {
+        return this.connection.promise().query(`DELETE FROM department WHERE id = ?`, department)
     } 
 
     // delete a role
-    deleteRole() {
-        return this.connection.promise().query(`DELETE FROM role WHERE id = ?`)
+    deleteRole(role) {
+        return this.connection.promise().query(`DELETE FROM role WHERE id = ?`, role)
     }
    
     // delete an employee
-    deleteEmployee() {
-        return this.connection.promise().query(`DELETE FROM employee WHERE id = ?`)
+    deleteEmployee(employee) {
+        return this.connection.promise().query(`DELETE FROM employee WHERE id = ?`, employee)
     }
 
     quit() {

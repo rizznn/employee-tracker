@@ -110,12 +110,19 @@ function viewAllEmployees() {
 function viewAllEmployeesByDepartment() {
     db.allDepartments()
     .then((res) => {
-        return res[0].map(department => {
-            return {
-                name: department.name,
-                value: department.id
-            }
-        })
+        return res[0].map(
+            ({ id, name }) => ({
+                name: `${name}`,
+                value: id
+            })
+        //     department => {
+        //     return {
+        //         name: `${department.name}`,
+        //         value: department.id
+        //     }
+        // }
+        
+        )
     })
     .then(async (departmentList) => {
         return inquirer.prompt([
@@ -308,43 +315,31 @@ function updateEmployeeRole() {
         ])
         .then(res => {
             db.allRoles()
-                .then(([roles]) => {
-                    const roleList = roles.map(({ id, title }) => ({
-                        name: title,
-                        value: id
-                    }));
+            .then(([roles]) => {
+                const roleList = roles.map(({ id, title }) => ({
+                    name: title,
+                    value: id
+                }));
 
-                    return inquirer.prompt([
-                        {
-                            type: "list",
-                            name: "roleId",
-                            message: "What is the new role of this employee?",
-                            choices: roleList
-                        }
-                    ])
-                    .then(res => 
-                        db.updateEmployeeRole(res.employeeId, res.roleId))
-                    .then(() => {
-                        console.log("Employee's role is updated"),
-                        promptUser();
-                    })
-                    .catch(err => console.log(err));
-                });
+                return inquirer.prompt([
+                    {
+                        type: "list",
+                        name: "roleId",
+                        message: "What is the new role of this employee?",
+                        choices: roleList
+                    }
+                ])
+                .then(res => 
+                    db.updateEmployeeRole(res.employeeId, res.roleId))
+                .then(() => {
+                    console.log("Employee's role is updated"),
+                    promptUser();
+                })
+                .catch(err => console.log(err));
+            });
         });
     })
 }
-
-// function allManager() {
-//     db.allEmployees()
-//     .then(res => {
-//         return res[0].map(manager => {
-//             return {
-//                 name: `${manager.first_name} ${manager.last_name}`,
-//                 value: manager.id,
-//             }
-//         })
-//     })
-// }
 
 // Update employee manager
 function updateEmployeeManager() {
@@ -388,7 +383,6 @@ function updateEmployeeManager() {
             })
     })
     .then(answer => {
-        // console.log(answer);
         return db.updateEmployeeManager(res.employeeListId, answer.managerId);
     })
     .then(res => {
@@ -396,16 +390,106 @@ function updateEmployeeManager() {
         console.log("Employee's Manager is updated");
         promptUser();
     })
-    .catch(err => console.log(err));
-    
+    .catch(err => console.log(err));    
     })
 }
 
+// Remove department
+function removeDepartment() {
+    db.allDepartments()
+    .then((res) => {
+        return res[0].map(department => {
+            return {
+                name: `${department.name}`,
+                value: department.id
+            }
+        })
+    })
+    .then((departmentList) => {
+        return inquirer.prompt([
+            {
+                type: 'list',
+                name: 'departmentId',
+                choices: departmentList,
+                message: 'Which department you want to delete?'
+            }
+        ])
+    })
+    .then(answer => {
+        return db.deleteDepartment(answer.departmentId);
+    })
+    .then(res => {
+        // console.log(res);
+        console.log('Department Deleted Successfully')
+        promptUser();
+    })
+    .catch(err => console.log(err));    
 
-// "Remove Department",
-// "Remove Role",
-// "Remove Employee",
+}
 
+// Remove role
+function removeRole() {
+    db.allRoles()
+    .then((res) => {
+        return res[0].map(roles => {
+            return {
+                name: roles.title,
+                value: roles.id
+            }
+        })
+    })
+    .then((roleList) => {
+        return inquirer.prompt([
+            {
+                type: 'list',
+                name: 'roleId',
+                choices: roleList,
+                message: 'Which role you want to delete?'
+            }
+        ])
+    })
+    .then(answer => {
+        return db.deleteRole(answer.roleId);
+    })
+    .then(res => {
+        // console.log(res);
+        console.log('Role Deleted Successfully')
+        promptUser();
+    })
+    .catch(err => console.log(err));
+}
+
+// Remove employee
+function removeEmployee() {
+    db.allEmployees()
+    .then((res) => {
+        return res[0].map(employee => {
+            return {
+                name: `${employee.first_name} ${employee.last_name}`,
+                value: employee.id
+            }
+        })
+    })
+    .then((employees) => {
+        return inquirer.prompt([
+            {
+                type: 'list',
+                name: 'employeeId',
+                choices: employees,
+                message: 'Please select an employee to delete'
+            }
+        ])
+    })
+    .then(answer => {
+        return db.deleteEmployee(answer.employeeId);
+    })
+    .then(res => {
+        // console.log(res);
+        console.log('Employee Deleted Successfully')
+        promptUser();
+    })
+    .catch(err => console.log(err));
+}
 
 function exit() {
     db.quit();
