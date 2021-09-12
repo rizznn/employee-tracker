@@ -110,21 +110,15 @@ function viewAllEmployees() {
 function viewAllEmployeesByDepartment() {
     db.allDepartments()
     .then((res) => {
-        return res[0].map(
-            // ({ id, name }) => ({
-            //     name: `${name}`,
-            //     value: id
-            // })
-            department => {
+        return res[0].map(department => {
             return {
                 name: department.name,
                 value: department.id
             }
-        }
-        
-        )
+        })
     })
     .then(async (departmentList) => {
+        console.log(departmentList);
         return inquirer.prompt([
             {
                 type: "list",
@@ -136,7 +130,7 @@ function viewAllEmployeesByDepartment() {
     })
     .then(answer => {
         console.log(answer.departmentId);
-        return db.allEmployeesByDepartment( answer.departmentId);
+        return db.allEmployeesByDepartment(answer.departmentId);
     })
     .then(res => {
         console.table(res[0])
@@ -321,77 +315,35 @@ function updateEmployeeRole() {
     .then(res => {
         let employeeListId = res.employeeListId;
 
-    db.allRoles()
-    .then((res) => {
-        return res[0].map(role => {
-            return {
-                name: role.title,
-                value: role.id,
-            }
+        db.allRoles()
+        .then((res) => {
+            return res[0].map(role => {
+                return {
+                    name: role.title,
+                    value: role.id,
+                }
+            })
+        }) 
+        .then((roleList) => {
+            return inquirer.prompt(       
+                {
+                    type: 'list',
+                    name: 'roleId',
+                    choices: roleList,
+                    message: 'Please select the role.'
+                }
+            )
         })
-    }) 
-    .then((roleList) => {
-        return inquirer.prompt(
-     
-            {
-                type: 'list',
-                name: 'roleId',
-                choices: roleList,
-                message: 'Please select the role.'
-            }
-        )
-    })
-    .then(answer => {
-        return db.updateEmployeeRole(employeeListId, answer.roleId);
-    })
-    .then(res => {
-        // console.log(res);
-        console.log('Updated Manager Successfully');
-        promptUser();
-    })
-    .catch(err => console.log(err));
-});
-
-    // db.allEmployees()
-    // .then(([employees]) => {
-    //     const employeeList = employees.map(({ id, first_name, last_name }) => ({
-    //         name: `${first_name} ${last_name}`,
-    //         value: id
-    //     }));
-    //     return inquirer.prompt([
-    //         {
-    //             type: "list",
-    //             name: "employeeId",
-    //             message: "Which employee's role do you want to update?",
-    //             choices: employeeList
-    //         }
-    //     ])
-    //     .then(res => {
-    //         db.allRoles()
-    //         .then(([roles]) => {
-    //             const roleList = roles.map(({ id, title }) => ({
-    //                 name: title,
-    //                 value: id
-    //             }));
-
-    //             return inquirer.prompt([
-    //                 {
-    //                     type: "list",
-    //                     name: "roleId",
-    //                     message: "What is the new role of this employee?",
-    //                     choices: roleList
-    //                 }
-    //             ])
-    //             .then(res => 
-    //                 db.updateEmployeeRole(res.employeeId, res.roleId))
-    //             .then(() => {
-    //                 console.log("Employee's role is updated"),
-    //                 promptUser();
-    //             })
-    //             .catch(err => console.log(err));
-    //         });
-    //     });
-    // })
+        .then(answer => {
+            return db.updateEmployeeRole(employeeListId, answer.roleId);
+        })
+        .then(res => {
+            // console.log(res);
+            console.log('Updated Manager Successfully');
+            promptUser();
+        })
+        .catch(err => console.log(err));
+    });
 }
 
 // Update employee manager
@@ -436,7 +388,7 @@ function updateEmployeeManager() {
             })
     })
     .then(answer => {
-        return db.updateEmployeeManager(res.employeeListId, answer.managerId);
+        return db.updateEmployeeManager(employeeListId, answer.managerId);
     })
     .then(res => {
         // console.log(res);
