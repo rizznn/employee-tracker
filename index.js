@@ -111,16 +111,16 @@ function viewAllEmployeesByDepartment() {
     db.allDepartments()
     .then((res) => {
         return res[0].map(
-            ({ id, name }) => ({
-                name: `${name}`,
-                value: id
-            })
-        //     department => {
-        //     return {
-        //         name: `${department.name}`,
-        //         value: department.id
-        //     }
-        // }
+            // ({ id, name }) => ({
+            //     name: `${name}`,
+            //     value: id
+            // })
+            department => {
+            return {
+                name: department.name,
+                value: department.id
+            }
+        }
         
         )
     })
@@ -300,45 +300,98 @@ function addEmployee() {
 // Update an employee role
 function updateEmployeeRole() {
     db.allEmployees()
-    .then(([employees]) => {
-        const employeeList = employees.map(({ id, first_name, last_name }) => ({
-            name: `${first_name} ${last_name}`,
-            value: id
-        }));
-        return inquirer.prompt([
-            {
-                type: "list",
-                name: "employeeId",
-                message: "Which employee's role do you want to update?",
-                choices: employeeList
+    .then((res) => {
+        return res[0].map(employee => {
+            return {
+                name: `${employee.first_name} ${employee.last_name}`,
+                value: employee.id
             }
-        ])
-        .then(res => {
-            db.allRoles()
-            .then(([roles]) => {
-                const roleList = roles.map(({ id, title }) => ({
-                    name: title,
-                    value: id
-                }));
-
-                return inquirer.prompt([
-                    {
-                        type: "list",
-                        name: "roleId",
-                        message: "What is the new role of this employee?",
-                        choices: roleList
-                    }
-                ])
-                .then(res => 
-                    db.updateEmployeeRole(res.employeeId, res.roleId))
-                .then(() => {
-                    console.log("Employee's role is updated"),
-                    promptUser();
-                })
-                .catch(err => console.log(err));
-            });
-        });
+        })
     })
+    .then(async (employeeList) => {
+        return inquirer.prompt(
+            {
+                type: 'list',
+                name: 'employeeListId',
+                choices: employeeList,
+                message: "Whose employee's role you want to update?"
+            }
+        )
+    })
+    .then(res => {
+        let employeeListId = res.employeeListId;
+
+    db.allRoles()
+    .then((res) => {
+        return res[0].map(role => {
+            return {
+                name: role.title,
+                value: role.id,
+            }
+        })
+    }) 
+    .then((roleList) => {
+        return inquirer.prompt(
+     
+            {
+                type: 'list',
+                name: 'roleId',
+                choices: roleList,
+                message: 'Please select the role.'
+            }
+        )
+    })
+    .then(answer => {
+        return db.updateEmployeeRole(employeeListId, answer.roleId);
+    })
+    .then(res => {
+        // console.log(res);
+        console.log('Updated Manager Successfully');
+        promptUser();
+    })
+    .catch(err => console.log(err));
+});
+
+    // db.allEmployees()
+    // .then(([employees]) => {
+    //     const employeeList = employees.map(({ id, first_name, last_name }) => ({
+    //         name: `${first_name} ${last_name}`,
+    //         value: id
+    //     }));
+    //     return inquirer.prompt([
+    //         {
+    //             type: "list",
+    //             name: "employeeId",
+    //             message: "Which employee's role do you want to update?",
+    //             choices: employeeList
+    //         }
+    //     ])
+    //     .then(res => {
+    //         db.allRoles()
+    //         .then(([roles]) => {
+    //             const roleList = roles.map(({ id, title }) => ({
+    //                 name: title,
+    //                 value: id
+    //             }));
+
+    //             return inquirer.prompt([
+    //                 {
+    //                     type: "list",
+    //                     name: "roleId",
+    //                     message: "What is the new role of this employee?",
+    //                     choices: roleList
+    //                 }
+    //             ])
+    //             .then(res => 
+    //                 db.updateEmployeeRole(res.employeeId, res.roleId))
+    //             .then(() => {
+    //                 console.log("Employee's role is updated"),
+    //                 promptUser();
+    //             })
+    //             .catch(err => console.log(err));
+    //         });
+    //     });
+    // })
 }
 
 // Update employee manager
