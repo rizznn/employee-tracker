@@ -14,6 +14,7 @@ function promptUser() {
             "View All Employees",
             "View All Employees By Department",
             "View All Employees By Manager",
+            "View Total Budget By Department",
             "Add Department",
             "Add Role",
             "Add Employee",
@@ -42,6 +43,9 @@ function promptUser() {
                 break;
             case "View All Employees By Manager":
                 viewAllEmployeesByManager();
+                break;
+            case "View Total Budget By Department":
+                viewTotalBudgetByDepartment();
                 break;
             case "Add Department":
                 addDepartment();
@@ -167,6 +171,38 @@ function viewAllEmployeesByManager() {
     })
     .catch(err => console.log(err));
 }
+
+function viewTotalBudgetByDepartment() {
+    db.allDepartments()
+    .then((res) => {
+        return res[0].map(department => {
+            return {
+                name: department.department,
+                value: department.id
+            }
+        })
+    })
+    .then(async (departmentList) => {
+        return inquirer.prompt([
+            {
+                type: "list",
+                name: "departmentId",
+                message: "Which department you would like to view?",
+                choices: departmentList
+            }
+        ])
+    })
+    .then(answer => {
+        return db.totalBudgetByDepartment(answer.departmentId);
+    })
+    .then(res => {
+        console.log('\n')
+        console.table(res[0])
+        promptUser();
+    })
+    .catch(err => console.log(err));
+}
+
 
 // Add a department
 function addDepartment() {

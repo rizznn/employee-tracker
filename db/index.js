@@ -92,6 +92,13 @@ class EmployeeDB {
         return this.connection.promise().query(`DELETE FROM employee WHERE id = ?`, employee);
     }
 
+    // view total budget by department
+    totalBudgetByDepartment(departmentId) {
+        return this.connection.promise().query(
+            `SELECT department_id as id, department.name AS department, SUM(role.salary) AS total FROM role LEFT JOIN department ON role.department_id = department.id WHERE department_id = ? GROUP BY department_id`, departmentId
+        );
+    }
+    
     quit() {
         this.connection.end();
     }
