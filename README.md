@@ -14,13 +14,12 @@ This website is created with Visual Studio Code using node.js, inquirer, console
 
 ## Usage
 In your terminal, run the up by typing `npm start` then the prompt will start.
-* User will be able to view all departments, roles, employees, employees by department and employees by manager.
+* User will be able to view all departments, roles, employees, employees by department, employees by manager and total budget by department.
 * User will be able to update employee's role and manager.
 * User will be able add and remove departments, roles and employees.
 
 ## Screenshots
-![image](https://user-images.githubusercontent.com/80712058/132986990-763b3861-26eb-4ee9-b9a2-10d4ea71a29b.png)
-
+![image](https://user-images.githubusercontent.com/80712058/133023687-a01d61f2-58a6-4e81-986a-f3cc4e989186.png)
 
 View all Departments, Roles, and Employees
 ![image](https://user-images.githubusercontent.com/80712058/132987103-fc7fca05-bd62-4418-8f42-054237da3676.png)
@@ -32,6 +31,10 @@ View Employees by Department and by Manager
 ![image](https://user-images.githubusercontent.com/80712058/132987191-4e12fa8f-d105-4879-9313-e4fe7e751fc0.png)
 
 
+View Total Budget by Department
+![image](https://user-images.githubusercontent.com/80712058/133024385-c17a63cf-2653-4336-852a-96f8375be276.png)
+
+
 Add Department, Role and Employee
 ![image](https://user-images.githubusercontent.com/80712058/132987559-037dcac2-dc83-40ab-ba73-75abc98d16c6.png)
 ![image](https://user-images.githubusercontent.com/80712058/132987599-37dc07da-e420-45ca-923c-38e559604287.png)
@@ -41,7 +44,6 @@ Update Employee's Role and Manager
 
 Remove Department, Role and Employee
 ![image](https://user-images.githubusercontent.com/80712058/132987955-1bd2bd2c-dc1e-45eb-851a-556dc5695579.png)
-
 
 
 ## Contributing
