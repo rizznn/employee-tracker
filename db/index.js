@@ -43,6 +43,12 @@ class EmployeeDB {
         );
     }
 
+    // view total budget by department
+    totalBudgetByDepartment(departmentId) {
+        return this.connection.promise().query(
+            `SELECT department_id as id, department.name AS department, SUM(role.salary) AS total FROM role LEFT JOIN department ON role.department_id = department.id WHERE department_id = ? GROUP BY department_id`, departmentId
+        );
+    }
 
     // add a department
     addDepartment(department) {
@@ -90,13 +96,6 @@ class EmployeeDB {
     // delete an employee
     deleteEmployee(employee) {
         return this.connection.promise().query(`DELETE FROM employee WHERE id = ?`, employee);
-    }
-
-    // view total budget by department
-    totalBudgetByDepartment(departmentId) {
-        return this.connection.promise().query(
-            `SELECT department_id as id, department.name AS department, SUM(role.salary) AS total FROM role LEFT JOIN department ON role.department_id = department.id WHERE department_id = ? GROUP BY department_id`, departmentId
-        );
     }
     
     quit() {
