@@ -10,7 +10,20 @@ This website is created with Visual Studio Code using node.js, inquirer, console
 3. Clone the repository: in your terminal, `git clone https://github.com/rizznn/employee-tracker.git`for https OR `git clone git@github.com:rizznn/employee-tracker.git` for ssh
 4. Navigate to the directory of the cloned repository in your terminal.
 5. In your terminal: `npm install` to install the npm modules
-6. Then run the app: `npm start`
+6. Make sure you have MySQL installed on your system
+7. Go to MySQL shell by typing  `mysql -u root -p` 
+8. A password will be asked to login to MySQL shell
+
+      NOTE:     Some system might get the error message "Command not found", add the following line of code to your `.bash_profile` file (or if you’re using ZSH,                         add it to your `.zshrc` file):
+
+          export PATH="${PATH}:/usr/local/mysql/bin/"
+      
+
+9. In MySQL shell, type  `source db/schema.sql;`  to run the file
+10. Then type  `quit;`  to quit the MySQL shell
+11. In your terminal, type `npm run seed` to run the seed file
+12. Then run the app by typing:  `npm start`
+
 
 ## Usage
 In your terminal, run the up by typing `npm start` then the prompt will start.
