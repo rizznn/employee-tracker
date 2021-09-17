@@ -19,9 +19,9 @@ This website is created with Visual Studio Code using node.js, inquirer, console
           export PATH="${PATH}:/usr/local/mysql/bin/"
       
 
-9. In MySQL shell, type  `source db/schema.sql;`  to run the file
-10. Then type  `quit;`  to quit the MySQL shell
-11. In your terminal, type `npm run seed` to run the seed file
+9. In MySQL shell, type in `source db/db.sql;`, `source db/schema.sql;` to drop and create the database and tables
+10. Then type `source db/schema.sql;` to seed the file
+11. Type  `quit;`  to quit the MySQL shell
 12. Then run the app by typing:  `npm start`
 
 
@@ -73,3 +73,6 @@ Contact me or create an issue or pull request
 
 ## Link to application repo
 https://github.com/rizznn/employee-tracker
+
+## Walkthrough Video
+https://drive.google.com/file/d/1rnUc_JXYbLfgQTnMWS4ftThYevpNFPOU/view
